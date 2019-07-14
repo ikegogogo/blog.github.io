@@ -446,6 +446,78 @@
 <li>空间换时间，冗余换效率</li>
 <li>避免不必要的冗余</li>
 </ol>
+<h1 id="Memcached使用实践"><a href="#Memcached使用实践" class="headerlink" title="Memcached使用实践"></a>Memcached使用实践</h1><p>memcached是高性能的分布式缓存服务器，数据存储在内存中，重启memcached或系统会导致数据全部消失，或内存容量达到指定值后，会使用lRU（Leatst Recently Used）算法自动删除不使用的缓存。memcached是一个多线程的缓存服务器，包括主线程（接受连接）和工作线程（处理连接请求）。</p>
+<h5 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h5><ul>
+<li>协议简单</li>
+<li>基于libevent的事件处理</li>
+<li>内置内存存储方式</li>
+<li>采用不互相通信的分布式</li>
+</ul>
+<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><ul>
+<li>connect连接服务器</li>
+<li>addServer</li>
+<li>add添加一个缓存数据，如果存在会返回失败</li>
+<li>replace替换缓存数据</li>
+<li>set 设置一个key的缓存内容，add和replace的集合体</li>
+<li>get </li>
+<li>delete</li>
+<li>flush</li>
+<li>getServerStatus</li>
+<li>getStatus</li>
+</ul>
+<h5 id="过期"><a href="#过期" class="headerlink" title="过期"></a>过期</h5><p>memcached为每个item设置一个过期时间，但不是到期就把item从内存中删除，而是访问item时如果到了有效期，才把item从内存中删除</p>
+<h5 id="LRU算法淘汰数据"><a href="#LRU算法淘汰数据" class="headerlink" title="LRU算法淘汰数据"></a>LRU算法淘汰数据</h5><p>当内存不够时，使用LRU算法淘汰旧的数据。淘汰规则是：从数据项列表尾部开始遍历，在列表中查找一个引用计数器为0的item释放掉，如果找不到引用计数器为0的，就找3小时没有访问过的。</p>
+<h5 id="分布式布置方案"><a href="#分布式布置方案" class="headerlink" title="分布式布置方案"></a>分布式布置方案</h5><ul>
+<li>普通hash：通过hash函数把key转化为整数后，与服务器数量取模</li>
+<li>一致性hash分布及增加虚拟节点改进算法</li>
+</ul>
+<h1 id="Redis使用与实践"><a href="#Redis使用与实践" class="headerlink" title="Redis使用与实践"></a>Redis使用与实践</h1><h5 id="key命令"><a href="#key命令" class="headerlink" title="key命令"></a>key命令</h5><ul>
+<li>exit key</li>
+<li>del key</li>
+<li>type key</li>
+<li>keys pattern</li>
+<li>expire key seconds：设置过期时间</li>
+<li>ttl key：返回过期时间</li>
+<li>randomKey 返回随机key，如果为空，返回空串</li>
+<li>rename oldKey newKey</li>
+<li>move key db-index</li>
+</ul>
+<h5 id="支持的数据类型"><a href="#支持的数据类型" class="headerlink" title="支持的数据类型"></a>支持的数据类型</h5><ul>
+<li>String：支持incr操作</li>
+<li>List</li>
+<li>Set：查找删除时间复杂度为O(1)</li>
+<li>Sorted Set：查找删除修改时间复杂度为O(1)，适用于存储对象</li>
+<li>Hash</li>
+</ul>
+<p>支持排序：SORT key</p>
+<h5 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h5><p>保证一个客户端连接发起事务中的命令可以连续执行，而中间不会插入其他客户端连接的命令。</p>
+<p>命令：muti   XXXX  exec</p>
+<h5 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h5><ul>
+<li>内存快照（snapshotting,rdb）：保存内存快照可能阻塞其他客户端请求，影响性能，如果重启或宕机可能会丢失上次save之后的数据。</li>
+<li>日志追加（append-only file,aof）：可有效降低数据丢失的风险，持久化文件可能过大。</li>
+</ul>
+<h5 id="主从同步"><a href="#主从同步" class="headerlink" title="主从同步"></a>主从同步</h5><p>优点：</p>
+<ul>
+<li>master可配置多个slave</li>
+<li>多个slave连接到相同master，salve还可以连接其他slave</li>
+<li>不会阻塞master</li>
+<li>主从同步用来提交系统的伸缩性，比如多个salve用于读请求</li>
+<li>在master服务器禁止数据持久化</li>
+</ul>
+<p>同步原理：</p>
+<p>设置好slave服务器后，slave自动和master建立连接，发送sync命令，master启动一个后台进程，将数据已快照方式写入文件，同时master主进程开始收集新的写命令并且缓存下来。master完成快照操作后，将数据文件发送给slave，slave将文件保存到磁盘，然后把数据加载到内存中。接着master把缓存的命令发送给slave。</p>
+<h5 id="深入redis内核"><a href="#深入redis内核" class="headerlink" title="深入redis内核"></a>深入redis内核</h5><p>内存淘汰：当内存不足时，有两种处理方式，启用虚拟内存（vm-enabled=yes），启用内存淘汰（maxmemory &gt;0）。</p>
+<p>淘汰算法：</p>
+<ul>
+<li>随机淘汰：随机删除一个key</li>
+<li>LRU淘汰：删除一个最近最少访问的key</li>
+<li>TTL淘汰：删除一个最快过期的key</li>
+</ul>
+<p>清除过期数据：</p>
+<ul>
+<li>定时进行：每100毫秒进行一次清理数据操作</li>
+<li>在用户获取数据时进行</li>
+</ul>
 
           
         
