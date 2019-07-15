@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="KK的笔记">
 <meta property="og:description" content="面向对象思想的核心概念异常与错误处理PHP里面，遇到任何自身错误都会触发一个错误，而不是抛出异常，PHP遇到非正常代码，通常会触发错误，而不是抛出异常，所以这种错误是不能用异常捕获的。 PHP只有手动抛出异常后才能捕获。 PHP中的错误处理机制php错误有很多种：warning,notice,deprecated,fatal error。PHP无法自动抛出异常，必须手动进行，可以用set_erro">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-15T16:32:27.313Z">
+<meta property="og:updated_time" content="2019-07-15T16:37:47.413Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记-PHP核心技术与最佳实践">
 <meta name="twitter:description" content="面向对象思想的核心概念异常与错误处理PHP里面，遇到任何自身错误都会触发一个错误，而不是抛出异常，PHP遇到非正常代码，通常会触发错误，而不是抛出异常，所以这种错误是不能用异常捕获的。 PHP只有手动抛出异常后才能捕获。 PHP中的错误处理机制php错误有很多种：warning,notice,deprecated,fatal error。PHP无法自动抛出异常，必须手动进行，可以用set_erro">
@@ -443,6 +443,110 @@
 <li>空间换时间，冗余换效率</li>
 <li>避免不必要的冗余</li>
 </ol>
+<h1 id="Memcached使用实践"><a href="#Memcached使用实践" class="headerlink" title="Memcached使用实践"></a>Memcached使用实践</h1><p>memcached是高性能的分布式缓存服务器，数据存储在内存中，重启memcached或系统会导致数据全部消失，或内存容量达到指定值后，会使用lRU（Leatst Recently Used）算法自动删除不使用的缓存。memcached是一个多线程的缓存服务器，包括主线程（接受连接）和工作线程（处理连接请求）。</p>
+<h5 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h5><ul>
+<li>协议简单</li>
+<li>基于libevent的事件处理</li>
+<li>内置内存存储方式</li>
+<li>采用不互相通信的分布式</li>
+</ul>
+<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><ul>
+<li>connect连接服务器</li>
+<li>addServer</li>
+<li>add添加一个缓存数据，如果存在会返回失败</li>
+<li>replace替换缓存数据</li>
+<li>set 设置一个key的缓存内容，add和replace的集合体</li>
+<li>get </li>
+<li>delete</li>
+<li>flush</li>
+<li>getServerStatus</li>
+<li>getStatus</li>
+</ul>
+<h5 id="过期"><a href="#过期" class="headerlink" title="过期"></a>过期</h5><p>memcached为每个item设置一个过期时间，但不是到期就把item从内存中删除，而是访问item时如果到了有效期，才把item从内存中删除</p>
+<h5 id="LRU算法淘汰数据"><a href="#LRU算法淘汰数据" class="headerlink" title="LRU算法淘汰数据"></a>LRU算法淘汰数据</h5><p>当内存不够时，使用LRU算法淘汰旧的数据。淘汰规则是：从数据项列表尾部开始遍历，在列表中查找一个引用计数器为0的item释放掉，如果找不到引用计数器为0的，就找3小时没有访问过的。</p>
+<h5 id="分布式布置方案"><a href="#分布式布置方案" class="headerlink" title="分布式布置方案"></a>分布式布置方案</h5><ul>
+<li>普通hash：通过hash函数把key转化为整数后，与服务器数量取模</li>
+<li>一致性hash分布及增加虚拟节点改进算法</li>
+</ul>
+<h1 id="Redis使用与实践"><a href="#Redis使用与实践" class="headerlink" title="Redis使用与实践"></a>Redis使用与实践</h1><h5 id="key命令"><a href="#key命令" class="headerlink" title="key命令"></a>key命令</h5><ul>
+<li>exit key</li>
+<li>del key</li>
+<li>type key</li>
+<li>keys pattern</li>
+<li>expire key seconds：设置过期时间</li>
+<li>ttl key：返回过期时间</li>
+<li>randomKey 返回随机key，如果为空，返回空串</li>
+<li>rename oldKey newKey</li>
+<li>move key db-index</li>
+</ul>
+<h5 id="支持的数据类型"><a href="#支持的数据类型" class="headerlink" title="支持的数据类型"></a>支持的数据类型</h5><ul>
+<li><p>String<br>字符串类型是redis最基础的数据结构，首先键是字符串类型，而且其他几种结构都是在字符串类型基础上构建的<br>字符串类型实际上可以是字符串、数字、二进制（图片、音频），单最大不能超过512M<br>使用场景：</p>
+<ol>
+<li>缓存<br>字符串最经典的使用场景，redis作为缓存层，mysql作为存储层，绝大部分请求数据都是redis中获取，由于redis具有支撑高并发特性，所以缓存通常能起到加速读写和降低后端压力的作用</li>
+<li>计数器<br>许多应用都会使用redis作为技术的基础工具，它可以实现快速技术、查询缓存的功能。</li>
+<li>共享session<br>处于负载均衡的考虑，分布式服务会将用户信息的访问均衡到不同服务器，用户刷新一次访问可讷讷个会需要重新登录，为了避免这个问题可以使用redis将用户session集中管理，在这种模式下只要保证redis的高可用和扩展性，每次获取用户更新或查询登录信息都直接从redis中集中获取</li>
+<li>限速<br>出于安全考虑，每次进行登录时让用户输入手机验证码，为了短信接口不被频繁访问，会限制用户每分钟获取验证码的频率</li>
+</ol>
+</li>
+<li><p>Hash<br>在redis中哈希类型是指键本身又是一种键值对结构<br>使用场景:</p>
+<ol>
+<li>哈希结构相对于字符串序列化缓存信息更加直观，并且在更新操作上更加便捷。</li>
+</ol>
+</li>
+<li><p>list<br>列表类型是用来存储多个有序的字符串，列表的每个字符串成为一个元素，一个列表最多可以存储2的32次方减1个元素。在redis中，可以对列表插入(push)和弹出（pop），还可以获取指定范围的元素列表。列表是一种比较灵活的数据结构，它可以充当栈和队列的角色。<br>使用场景：</p>
+<ol>
+<li><p>消息队列<br>redis的<code>lpush+brpop</code>命令组合就可以实现阻塞队列，生产者客户端是用<code>lpush</code>从列表左侧插入元素，多个消费者客户端使用<code>brpop</code>命令阻塞式的抢列表尾部的元素，多个客户端保证了消费的负载均衡的高可用性。</p>
+</li>
+<li><p>使用技巧列表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lpush+lpop=Stack(栈)</span><br><span class="line">lpush+rpop=Queue(队列)</span><br><span class="line">lpush+ltrim=Capped Collection(有限集合)</span><br><span class="line">lpush+brpop=Message Queue（消息队列）</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>Set：查找删除时间复杂度为O(1)</p>
+</li>
+<li><p>Sorted Set：查找删除修改时间复杂度为O(1)，适用于存储对象</p>
+</li>
+</ul>
+<p>支持排序：SORT key</p>
+<h5 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h5><p>保证一个客户端连接发起事务中的命令可以连续执行，而中间不会插入其他客户端连接的命令。</p>
+<p>命令：muti   XXXX  exec</p>
+<h5 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h5><ul>
+<li>内存快照（snapshotting,rdb）：保存内存快照可能阻塞其他客户端请求，影响性能，如果重启或宕机可能会丢失上次save之后的数据。</li>
+<li>日志追加（append-only file,aof）：可有效降低数据丢失的风险，持久化文件可能过大。</li>
+</ul>
+<h5 id="主从同步"><a href="#主从同步" class="headerlink" title="主从同步"></a>主从同步</h5><p>优点：</p>
+<ul>
+<li>master可配置多个slave</li>
+<li>多个slave连接到相同master，salve还可以连接其他slave</li>
+<li>不会阻塞master</li>
+<li>主从同步用来提交系统的伸缩性，比如多个salve用于读请求</li>
+<li>在master服务器禁止数据持久化</li>
+</ul>
+<p>同步原理：</p>
+<p>设置好slave服务器后，slave自动和master建立连接，发送sync命令，master启动一个后台进程，将数据已快照方式写入文件，同时master主进程开始收集新的写命令并且缓存下来。master完成快照操作后，将数据文件发送给slave，slave将文件保存到磁盘，然后把数据加载到内存中。接着master把缓存的命令发送给slave。</p>
+<h5 id="深入redis内核"><a href="#深入redis内核" class="headerlink" title="深入redis内核"></a>深入redis内核</h5><p>内存淘汰：当内存不足时，有两种处理方式，启用虚拟内存（vm-enabled=yes），启用内存淘汰（maxmemory &gt;0）。</p>
+<p>淘汰算法：</p>
+<ul>
+<li>随机淘汰：随机删除一个key</li>
+<li>LRU淘汰：删除一个最近最少访问的key</li>
+<li>TTL淘汰：删除一个最快过期的key</li>
+</ul>
+<p>清除过期数据：</p>
+<ul>
+<li>定时进行：每100毫秒进行一次清理数据操作</li>
+<li>在用户获取数据时进行</li>
+</ul>
+<h5 id="Redis和Memcached的区别"><a href="#Redis和Memcached的区别" class="headerlink" title="Redis和Memcached的区别"></a>Redis和Memcached的区别</h5><ul>
+<li>Redis和Memcache都是将数据存放在内存中，都是内存数据库。但是Memcache还可以缓存其他东西，比如图片、视频</li>
+<li>Redis不只支持简单的k/v类型的数据，同时还提供list、set、hash等数据结构的存储</li>
+<li>虚拟内存，当物理内存用完时Redis可以将一些很久没有用到的value交换到磁盘</li>
+<li>过期策略，memcache在set时就指定，例如<code>set key1 0 0 8</code>即永不过期，redis可以通过expire设定，例如：<code>expire name 10</code></li>
+<li>分布式，设定memcache集群，利用magent做一主多从；redis也可以做一主多从。</li>
+<li>存储安全，memcache挂掉后，数据没了；redis可以定期保存在磁盘（持久化）</li>
+<li>灾难恢复，memcache挂掉后数据不可恢复；redis数据丢失后可以通过aof恢复</li>
+<li>redis支持数据的备份，即master-slave模式的数据备份</li>
+<li>应用场景不同：redis除了可以做nosql数据库之外，还能做消息队列、数据堆栈和数据缓存等。memcache适合于缓存sql语句、数据集、用户临时性数据、延迟查询数据和session等。</li>
+</ul>
 
       
     </div>
@@ -577,7 +681,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
@@ -610,7 +714,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象思想的核心概念"><span class="nav-number">1.</span> <span class="nav-text">面向对象思想的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#异常与错误处理"><span class="nav-number">1.0.0.0.1.</span> <span class="nav-text">异常与错误处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PHP中的错误处理机制"><span class="nav-number">1.0.0.0.2.</span> <span class="nav-text">PHP中的错误处理机制</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象的设计原则"><span class="nav-number">2.</span> <span class="nav-text">面向对象的设计原则</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#单一职责原则"><span class="nav-number">2.0.0.0.0.1.</span> <span class="nav-text">单一职责原则</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#接口隔离原则"><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">接口隔离原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开放-封闭原则"><span class="nav-number">2.0.0.0.2.</span> <span class="nav-text">开放-封闭原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#里氏替换原则"><span class="nav-number">2.0.0.0.3.</span> <span class="nav-text">里氏替换原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#依赖倒置原则"><span class="nav-number">2.0.0.0.4.</span> <span class="nav-text">依赖倒置原则</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正则表达式基础与应用"><span class="nav-number">3.</span> <span class="nav-text">正则表达式基础与应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP网络技术及应用"><span class="nav-number">4.</span> <span class="nav-text">PHP网络技术及应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP协议是如何工作的"><span class="nav-number">4.0.0.0.1.</span> <span class="nav-text">HTTP协议是如何工作的</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#请求"><span class="nav-number">4.0.0.0.1.1.</span> <span class="nav-text">请求</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#响应"><span class="nav-number">4.0.0.0.1.2.</span> <span class="nav-text">响应</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#报头"><span class="nav-number">4.0.0.0.1.3.</span> <span class="nav-text">报头</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HTTP应用，模拟灌水机器人"><span class="nav-number">4.0.0.0.1.4.</span> <span class="nav-text">HTTP应用，模拟灌水机器人</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#垃圾请求防御"><span class="nav-number">4.0.0.0.1.5.</span> <span class="nav-text">垃圾请求防御</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Cookie于Session问答"><span class="nav-number">4.0.0.0.1.6.</span> <span class="nav-text">Cookie于Session问答</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP与数据库基础"><span class="nav-number">5.</span> <span class="nav-text">PHP与数据库基础</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#数据库应用优化"><span class="nav-number">5.0.0.0.0.1.</span> <span class="nav-text">数据库应用优化</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#存储引擎的选择"><span class="nav-number">5.0.0.0.0.2.</span> <span class="nav-text">存储引擎的选择</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#范式与反范式"><span class="nav-number">5.0.0.0.0.3.</span> <span class="nav-text">范式与反范式</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象思想的核心概念"><span class="nav-number">1.</span> <span class="nav-text">面向对象思想的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#异常与错误处理"><span class="nav-number">1.0.0.0.1.</span> <span class="nav-text">异常与错误处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PHP中的错误处理机制"><span class="nav-number">1.0.0.0.2.</span> <span class="nav-text">PHP中的错误处理机制</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象的设计原则"><span class="nav-number">2.</span> <span class="nav-text">面向对象的设计原则</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#单一职责原则"><span class="nav-number">2.0.0.0.0.1.</span> <span class="nav-text">单一职责原则</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#接口隔离原则"><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">接口隔离原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#开放-封闭原则"><span class="nav-number">2.0.0.0.2.</span> <span class="nav-text">开放-封闭原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#里氏替换原则"><span class="nav-number">2.0.0.0.3.</span> <span class="nav-text">里氏替换原则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#依赖倒置原则"><span class="nav-number">2.0.0.0.4.</span> <span class="nav-text">依赖倒置原则</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正则表达式基础与应用"><span class="nav-number">3.</span> <span class="nav-text">正则表达式基础与应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP网络技术及应用"><span class="nav-number">4.</span> <span class="nav-text">PHP网络技术及应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP协议是如何工作的"><span class="nav-number">4.0.0.0.1.</span> <span class="nav-text">HTTP协议是如何工作的</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#请求"><span class="nav-number">4.0.0.0.1.1.</span> <span class="nav-text">请求</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#响应"><span class="nav-number">4.0.0.0.1.2.</span> <span class="nav-text">响应</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#报头"><span class="nav-number">4.0.0.0.1.3.</span> <span class="nav-text">报头</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#HTTP应用，模拟灌水机器人"><span class="nav-number">4.0.0.0.1.4.</span> <span class="nav-text">HTTP应用，模拟灌水机器人</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#垃圾请求防御"><span class="nav-number">4.0.0.0.1.5.</span> <span class="nav-text">垃圾请求防御</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Cookie于Session问答"><span class="nav-number">4.0.0.0.1.6.</span> <span class="nav-text">Cookie于Session问答</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP与数据库基础"><span class="nav-number">5.</span> <span class="nav-text">PHP与数据库基础</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#数据库应用优化"><span class="nav-number">5.0.0.0.0.1.</span> <span class="nav-text">数据库应用优化</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#存储引擎的选择"><span class="nav-number">5.0.0.0.0.2.</span> <span class="nav-text">存储引擎的选择</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#范式与反范式"><span class="nav-number">5.0.0.0.0.3.</span> <span class="nav-text">范式与反范式</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Memcached使用实践"><span class="nav-number">6.</span> <span class="nav-text">Memcached使用实践</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#特点："><span class="nav-number">6.0.0.0.1.</span> <span class="nav-text">特点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#方法："><span class="nav-number">6.0.0.0.2.</span> <span class="nav-text">方法：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#过期"><span class="nav-number">6.0.0.0.3.</span> <span class="nav-text">过期</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#LRU算法淘汰数据"><span class="nav-number">6.0.0.0.4.</span> <span class="nav-text">LRU算法淘汰数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分布式布置方案"><span class="nav-number">6.0.0.0.5.</span> <span class="nav-text">分布式布置方案</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis使用与实践"><span class="nav-number">7.</span> <span class="nav-text">Redis使用与实践</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#key命令"><span class="nav-number">7.0.0.0.1.</span> <span class="nav-text">key命令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#支持的数据类型"><span class="nav-number">7.0.0.0.2.</span> <span class="nav-text">支持的数据类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#事务处理"><span class="nav-number">7.0.0.0.3.</span> <span class="nav-text">事务处理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#持久化"><span class="nav-number">7.0.0.0.4.</span> <span class="nav-text">持久化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#主从同步"><span class="nav-number">7.0.0.0.5.</span> <span class="nav-text">主从同步</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#深入redis内核"><span class="nav-number">7.0.0.0.6.</span> <span class="nav-text">深入redis内核</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Redis和Memcached的区别"><span class="nav-number">7.0.0.0.7.</span> <span class="nav-text">Redis和Memcached的区别</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
