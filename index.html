@@ -242,6 +242,279 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.404nf.cn/2019/07/15/设计模式整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="KK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK的笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/15/设计模式整理/" itemprop="url">设计模式整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-15T22:49:46+08:00">
+                2019-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>单例模式解决的是如何在整个项目中创建唯一对象实例的问题。</p>
+<ol>
+<li>$_instance必须声明为静态的私有变量</li>
+<li>构造函数和析构函数必须声明为私有,防止外部程序new 类从而失去单例模式的意义</li>
+<li>getInstance()方法必须设置为公有的,必须调用此方法 以返回实例的一个引用</li>
+<li>::操作符只能访问静态变量和静态函数</li>
+<li>new对象都会消耗内存</li>
+<li>使用场景:最常用的地方是数据库连接。</li>
+<li>使用单例模式生成一个对象后， 该对象可以被其它众多对象所使用。</li>
+<li>私有的__clone()方法防止克隆对象</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> $uniqueInstance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">__clone</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>::$uniqueInstance === <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">self</span>::$uniqueInstance = <span class="keyword">new</span> <span class="keyword">self</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>::$uniqueInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><p>工厂模式解决的是如何不通过new建立实例对象的方法</p>
+<p>工厂方法或者类生成对象，而不是在代码中直接new。 </p>
+<p>使用工厂模式，可以避免当改变某个类的名字或者方法之后，在调用这个类的所有的代码中都修改它的名字或者参数。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 如果某个类在很多的文件中都new ClassName()，那么万一这个类的名字</span></span><br><span class="line"><span class="comment">     * 发生变更或者参数发生变化，如果不使用工厂模式，就需要修改每一个PHP</span></span><br><span class="line"><span class="comment">     * 代码，使用了工厂模式之后，只需要修改工厂类或者方法就可以了。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">createDatabase</span><span class="params">()</span></span>&#123;</span><br><span class="line">        $test = <span class="keyword">new</span> Test1();</span><br><span class="line">        <span class="keyword">return</span> $test;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h3><p>将各种截然不同的函数接口封装成统一的API。 </p>
+<p>PHP中的数据库操作有MySQL,MySQLi,PDO三种，可以用适配器模式统一成一致，使不同的数据库操作，统一成一样的API。类似的场景还有cache适配器，可以将memcache,redis,file,apc等不同的缓存函数，统一成一致。<br>首先定义一个接口(有几个方法，以及相应的参数)。然后，有几种不同的情况，就写几个类实现该接口。将完成相似功能的函数，统一成一致的方法。</p>
+<h3 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h3><p>策略模式，将一组特定的行为和算法封装成类，以适应某些特定的上下文环境。<br>eg：假如有一个电商网站系统，针对男性女性用户要各自跳转到不同的商品类目，并且所有的广告位展示不同的广告。在传统的代码中，都是在系统中加入各种if else的判断，硬编码的方式。如果有一天增加了一种用户，就需要改写代码。使用策略模式，如果新增加一种用户类型，只需要增加一种策略就可以。其他所有的地方只需要使用不同的策略就可以。<br>首先声明策略的接口文件，约定了策略的包含的行为。然后，定义各个具体的策略实现类。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">UserStrategy.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 声明策略文件的接口，约定策略包含的行为。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">UserStrategy</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showAd</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showCategory</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">FemaleUser.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">'Loader.php'</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FemaleUser</span> <span class="keyword">implements</span> <span class="title">UserStrategy</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showAd</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"2016冬季女装"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showCategory</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"女装"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MaleUser.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">'Loader.php'</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MaleUser</span> <span class="keyword">implements</span> <span class="title">UserStrategy</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showAd</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"IPhone6s"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showCategory</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"电子产品"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Page.php<span class="comment">//执行文件</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">'Loader.php'</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Page</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> $strategy;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"AD"</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;strategy-&gt;showAd();</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"Category"</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;strategy-&gt;showCategory();</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">setStrategy</span><span class="params">(UserStrategy $strategy)</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;strategy=$strategy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$page = <span class="keyword">new</span> Page();</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'male'</span>]))&#123;</span><br><span class="line">    $strategy = <span class="keyword">new</span> MaleUser();</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    $strategy = <span class="keyword">new</span> FemaleUser();</span><br><span class="line">&#125;</span><br><span class="line">$page-&gt;setStrategy($strategy);</span><br><span class="line">$page-&gt;index();</span><br></pre></td></tr></table></figure>
+<h3 id="注册模式"><a href="#注册模式" class="headerlink" title="注册模式"></a>注册模式</h3><p>注册模式，解决全局共享和交换对象。已经创建好的对象，挂在到某个全局可以使用的数组上，在需要使用的时候，直接从该数组上获取即可。将对象注册到全局的树上。任何地方直接去访问。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Register</span><br><span class="line">&#123;</span><br><span class="line">    protected static  $objects;</span><br><span class="line">    function set($alias,$object)//将对象注册到全局的树上</span><br><span class="line">    &#123;</span><br><span class="line">        self::$objects[$alias]=$object;//将对象放到树上</span><br><span class="line">    &#125;</span><br><span class="line">    static function get($name)&#123;</span><br><span class="line">        return self::$objects[$name];//获取某个注册到树上的对象</span><br><span class="line">    &#125;</span><br><span class="line">    function _unset($alias)</span><br><span class="line">    &#123;</span><br><span class="line">        unset(self::$objects[$alias]);//移除某个注册到树上的对象。</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>观察者模式(Observer)，当一个对象状态发生变化时，依赖它的对象全部会收到通知，并自动更新。<br>场景:一个事件发生后，要执行一连串更新操作。传统的编程方式，就是在事件的代码之后直接加入处理的逻辑。当更新的逻辑增多之后，代码会变得难以维护。这种方式是耦合的，侵入式的，增加新的逻辑需要修改事件的主体代码。<br>观察者模式实现了低耦合，非侵入式的通知与更新机制。 </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 事件产生类</span></span><br><span class="line"><span class="comment"> * Class EventGenerator</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">EventGenerator</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $ObServers = [];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//增加观察者</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">(ObServer $ObServer)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;ObServers[] = $ObServer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//事件通知</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">notify</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">$this</span>-&gt;ObServers <span class="keyword">as</span> $ObServer) &#123;</span><br><span class="line">            $ObServer-&gt;update();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 观察者接口类</span></span><br><span class="line"><span class="comment"> * Interface ObServer</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ObServer</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">($event_info = null)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 观察者1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ObServer1</span> <span class="keyword">implements</span> <span class="title">ObServer</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">($event_info = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"观察者1 收到执行通知 执行完毕！\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 观察者1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ObServer2</span> <span class="keyword">implements</span> <span class="title">ObServer</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">($event_info = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"观察者2 收到执行通知 执行完毕！\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 事件</span></span><br><span class="line"><span class="comment"> * Class Event</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Event</span> <span class="keyword">extends</span> <span class="title">EventGenerator</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 触发事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">trigger</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//通知观察者</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;notify();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个事件</span></span><br><span class="line">$event = <span class="keyword">new</span> Event();</span><br><span class="line"><span class="comment">//为事件增加旁观者</span></span><br><span class="line">$event-&gt;add(<span class="keyword">new</span> ObServer1());</span><br><span class="line">$event-&gt;add(<span class="keyword">new</span> ObServer2());</span><br><span class="line"><span class="comment">//执行事件 通知旁观者</span></span><br><span class="line">$event-&gt;trigger();</span><br></pre></td></tr></table></figure>
+<h3 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h3><p>原型模式是先创建好一个原型对象，然后通过clone原型对象来创建新的对象。适用于大对象的创建，因为创建一个大对象需要很大的开销，如果每次new就会消耗很大，原型模式仅需内存拷贝即可。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.404nf.cn/2019/07/15/排序算法整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="KK">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="KK的笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/15/排序算法整理/" itemprop="url">排序算法整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-15T22:25:04+08:00">
+                2019-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p>快速排序是十分常用的高效率的算法，其思想是：先选一个标尺，用它把整个队列过一遍筛选，以保证其左边的元素都不大于它，其右边的元素都不小与它</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 快速排序</span></span><br><span class="line"><span class="comment"> * 数据结构----------------数组</span></span><br><span class="line"><span class="comment"> * 最差时间复杂度-----------每次选取的基准都是最大（或最小）的元素，导致每次只划分出了一个分区，需要进行n-1次划分才能结束递归，时间复杂度为O(n^2)</span></span><br><span class="line"><span class="comment"> * 最优时间复杂度-----------每次选取的基准都是中位数，这样每次都均匀的划分出两个分区，只需要logn次划分就能结束递归，时间复杂度为O(nlogn)</span></span><br><span class="line"><span class="comment"> * 平均时间复杂度-----------O(nlogn)</span></span><br><span class="line"><span class="comment"> * 空间复杂度--------------O(logn)</span></span><br><span class="line"><span class="comment"> * 稳定性-----------------不稳定</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">quickSort</span><span class="params">($arr)</span></span>&#123;</span><br><span class="line">  <span class="comment">// 获取数组长度</span></span><br><span class="line">  $length = count($arr);</span><br><span class="line">  <span class="comment">// 判断长度是否需要继续二分比较</span></span><br><span class="line">  <span class="keyword">if</span>($length &lt;= <span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> $arr;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 定义基准元素</span></span><br><span class="line">  $base = $arr[<span class="number">0</span>];</span><br><span class="line">  <span class="comment">// 定义两个空数组，用于存放和基准元素的比较后的结果</span></span><br><span class="line">  $left = [];</span><br><span class="line">  $right = [];</span><br><span class="line">  <span class="comment">// 遍历数组</span></span><br><span class="line">  <span class="keyword">for</span> ($i=<span class="number">1</span>; $i &lt; $length; $i++) &#123; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 和基准元素作比较</span></span><br><span class="line">    <span class="keyword">if</span> ($arr[$i] &gt; $base) &#123;</span><br><span class="line">      $right[] = $arr[$i];</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">      $left[] = $arr[$i];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 然后递归分别处理left和right</span></span><br><span class="line">  $left = quickSort($left);</span><br><span class="line">  $right = quickSort($right);</span><br><span class="line">  <span class="comment">// 合并</span></span><br><span class="line">  <span class="keyword">return</span> array_merge($left,[$base],$right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>在要排序的一组数中，对当前还未排好的序列，从前往后对相邻的两个数依次进行比较和调整，让较大的数往下沉，较小的往上冒。即，每当两相邻的数比较后发现它们的排序与排序要求相反时，就将它们互换。</p>
+<p>比如：2，4，1<br>第一次冒出4：2，1，4<br>第二次冒出2：1，2，4</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 冒泡排序</span></span><br><span class="line"><span class="comment"> * 数据结构----------------数组</span></span><br><span class="line"><span class="comment"> * 最差时间复杂度-----------O(n^2)</span></span><br><span class="line"><span class="comment"> * 最优时间复杂度-----------O(n)</span></span><br><span class="line"><span class="comment"> * 平均时间复杂度-----------O(n^2)</span></span><br><span class="line"><span class="comment"> * 空间复杂度---------------O(1)</span></span><br><span class="line"><span class="comment"> * 稳定性------------------稳定</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bubbleSort</span><span class="params">($arr)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取数组长度</span></span><br><span class="line">  $length = count($arr);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 第一层循环控制冒泡轮次</span></span><br><span class="line">  <span class="keyword">for</span> ($i=<span class="number">0</span>; $i &lt; $length<span class="number">-1</span>; $i++) &#123; </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 内层循环控制从第0个键值和后一个键值比较，每次冒出一个最大的数</span></span><br><span class="line">    <span class="keyword">for</span> ($k=<span class="number">0</span>; $k &lt; $length-$i<span class="number">-1</span>; $k++) &#123; </span><br><span class="line">      <span class="keyword">if</span>($arr[$k] &gt; $arr[$k+<span class="number">1</span>])&#123;</span><br><span class="line">        $tmp = $arr[$k+<span class="number">1</span>];</span><br><span class="line">        $arr[$k+<span class="number">1</span>] = $arr[$k];</span><br><span class="line">        $arr[$k] = $tmp;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> $arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>在要排序的一组数中，选出最小的一个数与第一个位置的数交换。然后在剩下的数当中再找最小的与第二个位置的数交换，如此循环到倒数第二个数和最后一个数比较为止。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 选择排序</span></span><br><span class="line"><span class="comment"> * 数据结构----------------数组</span></span><br><span class="line"><span class="comment"> * 最差时间复杂度-----------O(n^2)</span></span><br><span class="line"><span class="comment"> * 最优时间复杂度-----------O(n^2)</span></span><br><span class="line"><span class="comment"> * 平均时间复杂度-----------O(n^2)</span></span><br><span class="line"><span class="comment"> * 空间复杂度--------------O(1)</span></span><br><span class="line"><span class="comment"> * 稳定性-----------------不稳定</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">selectSort</span><span class="params">($arr)</span></span>&#123;</span><br><span class="line">     </span><br><span class="line">      <span class="comment">// 实现思路</span></span><br><span class="line">      <span class="comment">// 双重循环完成，外层控制轮数，当前的最小值，内层控制比较次数</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// 获取长度</span></span><br><span class="line">      $length = count($arr);</span><br><span class="line">  </span><br><span class="line">      <span class="keyword">for</span> ($i=<span class="number">0</span>; $i &lt; $length - <span class="number">1</span>; $i++) &#123; </span><br><span class="line">        <span class="comment">// 假设最小值的位置</span></span><br><span class="line">        $p = $i;</span><br><span class="line">  </span><br><span class="line">        <span class="comment">// 使用假设的最小值和其他值比较，找到当前的最小值</span></span><br><span class="line">        <span class="keyword">for</span> ($j=$i+<span class="number">1</span>; $j &lt; $length; $j++) &#123; </span><br><span class="line">          <span class="comment">// $arr[$p] 是已知的当前最小值</span></span><br><span class="line">  </span><br><span class="line">          <span class="comment">// 判断当前循环值和已知最小值的比较，当发下更小的值时记录下键，并进行下一次比较</span></span><br><span class="line">          <span class="keyword">if</span> ($arr[$p] &gt; $arr[$j]) &#123;</span><br><span class="line">            $p = $j; <span class="comment">// 比假设的值更小</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">  </span><br><span class="line">        <span class="comment">// 通过内部for循环找到了当前最小值的key,并保存在$p中</span></span><br><span class="line">        <span class="comment">// 判断 日光当前$p 中的键和假设的最小值的键不一致增将其互换</span></span><br><span class="line">        <span class="keyword">if</span> ($p != $i) &#123;</span><br><span class="line">          $tmp = $arr[$p];</span><br><span class="line">          $arr[$p] = $arr[$i];</span><br><span class="line">          $arr[$i] = $tmp;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 返回最终结果</span></span><br><span class="line">      <span class="keyword">return</span> $arr;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>在要排序的一组数中，假设前面的数已经是排好顺序的，现在要把第n个数插到前面的有序数中，使得这n个数也是排好顺序的。如此反复循环，直到全部排好顺序。</p>
+<p>插入排序算法还有使用二分查找的。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 直接插入排序</span></span><br><span class="line"><span class="comment"> * 数据结构----------------数组</span></span><br><span class="line"><span class="comment"> * 最差时间复杂度-----------O(n^2)：输入序列是降序排列的</span></span><br><span class="line"><span class="comment"> * 最优时间复杂度-----------O(n)：输入序列是升序排列的</span></span><br><span class="line"><span class="comment"> * 平均时间复杂度-----------O(n^2)</span></span><br><span class="line"><span class="comment"> * 空间复杂度--------------O(1)</span></span><br><span class="line"><span class="comment"> * 稳定性-----------------稳定</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">insertSort</span><span class="params">($arr)</span> </span>&#123;</span><br><span class="line">    $len=count($arr); </span><br><span class="line">    <span class="keyword">for</span>($i=<span class="number">1</span>, $i&lt;$len; $i++) &#123;</span><br><span class="line">        $tmp = $arr[$i];</span><br><span class="line">        <span class="comment">//内层循环控制，比较并插入</span></span><br><span class="line">        <span class="keyword">for</span>($j=$i<span class="number">-1</span>;$j&gt;=<span class="number">0</span>;$j--) &#123;</span><br><span class="line">            <span class="keyword">if</span>($tmp &lt; $arr[$j]) &#123;</span><br><span class="line">                <span class="comment">//发现插入的元素要小，交换位置，将后边的元素与前面的元素互换</span></span><br><span class="line">                $arr[$j+<span class="number">1</span>] = $arr[$j];</span><br><span class="line">                $arr[$j] = $tmp;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//如果碰到不需要移动的元素，由于是已经排序好是数组，则前面的就不需要再次比较了。</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> $arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://blog.404nf.cn/2019/07/13/读书笔记-PHP核心技术与最佳实践/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -446,78 +719,6 @@
 <li>空间换时间，冗余换效率</li>
 <li>避免不必要的冗余</li>
 </ol>
-<h1 id="Memcached使用实践"><a href="#Memcached使用实践" class="headerlink" title="Memcached使用实践"></a>Memcached使用实践</h1><p>memcached是高性能的分布式缓存服务器，数据存储在内存中，重启memcached或系统会导致数据全部消失，或内存容量达到指定值后，会使用lRU（Leatst Recently Used）算法自动删除不使用的缓存。memcached是一个多线程的缓存服务器，包括主线程（接受连接）和工作线程（处理连接请求）。</p>
-<h5 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h5><ul>
-<li>协议简单</li>
-<li>基于libevent的事件处理</li>
-<li>内置内存存储方式</li>
-<li>采用不互相通信的分布式</li>
-</ul>
-<h5 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h5><ul>
-<li>connect连接服务器</li>
-<li>addServer</li>
-<li>add添加一个缓存数据，如果存在会返回失败</li>
-<li>replace替换缓存数据</li>
-<li>set 设置一个key的缓存内容，add和replace的集合体</li>
-<li>get </li>
-<li>delete</li>
-<li>flush</li>
-<li>getServerStatus</li>
-<li>getStatus</li>
-</ul>
-<h5 id="过期"><a href="#过期" class="headerlink" title="过期"></a>过期</h5><p>memcached为每个item设置一个过期时间，但不是到期就把item从内存中删除，而是访问item时如果到了有效期，才把item从内存中删除</p>
-<h5 id="LRU算法淘汰数据"><a href="#LRU算法淘汰数据" class="headerlink" title="LRU算法淘汰数据"></a>LRU算法淘汰数据</h5><p>当内存不够时，使用LRU算法淘汰旧的数据。淘汰规则是：从数据项列表尾部开始遍历，在列表中查找一个引用计数器为0的item释放掉，如果找不到引用计数器为0的，就找3小时没有访问过的。</p>
-<h5 id="分布式布置方案"><a href="#分布式布置方案" class="headerlink" title="分布式布置方案"></a>分布式布置方案</h5><ul>
-<li>普通hash：通过hash函数把key转化为整数后，与服务器数量取模</li>
-<li>一致性hash分布及增加虚拟节点改进算法</li>
-</ul>
-<h1 id="Redis使用与实践"><a href="#Redis使用与实践" class="headerlink" title="Redis使用与实践"></a>Redis使用与实践</h1><h5 id="key命令"><a href="#key命令" class="headerlink" title="key命令"></a>key命令</h5><ul>
-<li>exit key</li>
-<li>del key</li>
-<li>type key</li>
-<li>keys pattern</li>
-<li>expire key seconds：设置过期时间</li>
-<li>ttl key：返回过期时间</li>
-<li>randomKey 返回随机key，如果为空，返回空串</li>
-<li>rename oldKey newKey</li>
-<li>move key db-index</li>
-</ul>
-<h5 id="支持的数据类型"><a href="#支持的数据类型" class="headerlink" title="支持的数据类型"></a>支持的数据类型</h5><ul>
-<li>String：支持incr操作</li>
-<li>List</li>
-<li>Set：查找删除时间复杂度为O(1)</li>
-<li>Sorted Set：查找删除修改时间复杂度为O(1)，适用于存储对象</li>
-<li>Hash</li>
-</ul>
-<p>支持排序：SORT key</p>
-<h5 id="事务处理"><a href="#事务处理" class="headerlink" title="事务处理"></a>事务处理</h5><p>保证一个客户端连接发起事务中的命令可以连续执行，而中间不会插入其他客户端连接的命令。</p>
-<p>命令：muti   XXXX  exec</p>
-<h5 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h5><ul>
-<li>内存快照（snapshotting,rdb）：保存内存快照可能阻塞其他客户端请求，影响性能，如果重启或宕机可能会丢失上次save之后的数据。</li>
-<li>日志追加（append-only file,aof）：可有效降低数据丢失的风险，持久化文件可能过大。</li>
-</ul>
-<h5 id="主从同步"><a href="#主从同步" class="headerlink" title="主从同步"></a>主从同步</h5><p>优点：</p>
-<ul>
-<li>master可配置多个slave</li>
-<li>多个slave连接到相同master，salve还可以连接其他slave</li>
-<li>不会阻塞master</li>
-<li>主从同步用来提交系统的伸缩性，比如多个salve用于读请求</li>
-<li>在master服务器禁止数据持久化</li>
-</ul>
-<p>同步原理：</p>
-<p>设置好slave服务器后，slave自动和master建立连接，发送sync命令，master启动一个后台进程，将数据已快照方式写入文件，同时master主进程开始收集新的写命令并且缓存下来。master完成快照操作后，将数据文件发送给slave，slave将文件保存到磁盘，然后把数据加载到内存中。接着master把缓存的命令发送给slave。</p>
-<h5 id="深入redis内核"><a href="#深入redis内核" class="headerlink" title="深入redis内核"></a>深入redis内核</h5><p>内存淘汰：当内存不足时，有两种处理方式，启用虚拟内存（vm-enabled=yes），启用内存淘汰（maxmemory &gt;0）。</p>
-<p>淘汰算法：</p>
-<ul>
-<li>随机淘汰：随机删除一个key</li>
-<li>LRU淘汰：删除一个最近最少访问的key</li>
-<li>TTL淘汰：删除一个最快过期的key</li>
-</ul>
-<p>清除过期数据：</p>
-<ul>
-<li>定时进行：每100毫秒进行一次清理数据操作</li>
-<li>在用户获取数据时进行</li>
-</ul>
 
           
         
@@ -1342,7 +1543,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1355,7 +1556,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
